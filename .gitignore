@@ -12,6 +12,10 @@ gallery
 *.gif
 *.ppm
 
+y.tab.c
+y.tab.h
+lex.yy.c
+
 ### C ###
 # Prerequisites
 *.d
