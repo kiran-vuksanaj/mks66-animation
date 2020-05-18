@@ -1,0 +1,18 @@
+basename gallery_kv
+frames 50
+push
+move 0 350 0
+push
+move 0 -300 0 yax
+move 500 0 0 xax
+rotate x 360 xspinny
+rotate y 360 yspinny
+rotate z 360 zspinny
+box -25 25 25 50 50 50
+vary yax 0 29 0 1
+vary yax 30 39 1 0.7
+vary yax 40 49 0.7 1
+vary xax 0 49 0 1
+vary xspinny 0 49 0 1.6
+vary yspinny 0 49 0 1.1
+vary zspinny 0 49 0 0.9
