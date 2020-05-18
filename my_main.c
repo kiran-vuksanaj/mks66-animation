@@ -213,21 +213,22 @@ void my_main() {
   g.blue = 255;
 
 
-  systems = new_stack();
-  tmp = new_matrix(4, 1000);
-  clear_screen( t );
-  clear_zbuffer(zb);
-
   for ( f = 0; f < num_frames; f++ ){
 	printf("=======FRAME %02d=======\n",f);
-	vn = *knobs;
+	
+	vn = knobs[f];
 	while (vn) {
 	  
 	  set_value( lookup_symbol(vn->name) , vn->value );
 	  printf("knob [%s] :: %lf // %lf\n",vn->name,vn->value, lookup_symbol(vn->name)->s.value);
 	  vn = vn->next;
 	}
-  
+
+	systems = new_stack();
+	tmp = new_matrix(4, 1000);
+	clear_screen( t );
+	clear_zbuffer(zb);
+	
 	for (i=0;i<lastop;i++) {
 	  tmp->lastcol = 0;
 	  printf("%d: ",i);
@@ -385,13 +386,13 @@ void my_main() {
 		  break;
 		case SAVE:
 		  printf("Save: %s //",op[i].op.save.p->name);
-		  printf("Skipping: internal to a frame\n");
-		  /* save_extension(t, op[i].op.save.p->name); */
+		  if(num_frames > 1) printf("Skipping: internal to a frame\n");
+		  else               save_extension(t, op[i].op.save.p->name);
 		  break;
 		case DISPLAY:
 		  printf("Display //");
-		  printf("Skipping: internal to a frame\n");
-		  /* display(t); */
+		  if(num_frames > 1)  printf("Skipping: internal to a frame\n");
+		  else                display(t);
 		  break;
 		}
 	  printf("\n");
@@ -399,9 +400,9 @@ void my_main() {
 	sprintf(frame_name,"frames/%s_%02d.png",name,f);
 	save_extension(t, frame_name);
 	display(t);
+	free_stack( systems );
+	free_matrix( tmp );
 
   }
-  free_stack( systems );
-  free_matrix( tmp );
 
 }
