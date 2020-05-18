@@ -407,12 +407,12 @@ void my_main() {
 		}
 	  printf("\n");
 	} //end operation loop
-	sprintf(frame_name,"frames/%s_%02d.png",name,f);
+	sprintf(frame_name,"anim/%s_%02d.png",name,f);
 	save_extension(t, frame_name);
 	/* display(t); */
 	free_stack( systems );
 	free_matrix( tmp );
 
   }
-
+  make_animation(name);
 }
