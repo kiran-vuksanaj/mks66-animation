@@ -1,0 +1,8 @@
+basename kiran_test
+frames 10
+push
+move 250 250 0
+rotate x 35
+rotate y 35
+rotate z 35
+box -100 100 100 200 200 200
