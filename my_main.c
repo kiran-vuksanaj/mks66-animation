@@ -131,7 +131,7 @@ struct vary_node ** second_pass() {
   double delta,total;
   for ( i = 0; i < lastop ; i++ ){
 	if ( op[i].opcode == VARY ) {
-	  delta = (op[i].op.vary.end_val - op[i].op.vary.start_val) / (op[i].op.vary.end_frame - op[i].op.vary.start_frame);
+	  delta = (op[i].op.vary.end_val - op[i].op.vary.start_val ) / (op[i].op.vary.end_frame - op[i].op.vary.start_frame + 1);
 	  total = op[i].op.vary.start_val;
 	  for ( f = (int)op[i].op.vary.start_frame; f < num_frames && f <= op[i].op.vary.end_frame; f++ ){
 		total += delta;
@@ -399,7 +399,7 @@ void my_main() {
 	} //end operation loop
 	sprintf(frame_name,"frames/%s_%02d.png",name,f);
 	save_extension(t, frame_name);
-	display(t);
+	/* display(t); */
 	free_stack( systems );
 	free_matrix( tmp );
 
