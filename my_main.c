@@ -70,7 +70,36 @@ void first_pass() {
   //These variables are defined at the bottom of symtab.h
   extern int num_frames;
   extern char name[128];
-
+  int i;
+  *name = '\0';
+  num_frames = -1;
+  short vary_found = 0;
+  for( i = 0; i < lastop; i++ ){
+	printf(".\n");
+	switch (op[i].opcode)
+	  {
+	  case FRAMES:
+		printf("frames command %f\n",op[i].op.frames.num_frames);
+		num_frames = (int)op[i].op.frames.num_frames;
+		break;
+	  case BASENAME:
+		printf("basename command [%s]\n",op[i].op.basename.p->name);
+		strncpy(name,op[i].op.basename.p->name,128);
+		break;
+	  case VARY:
+		printf("vary command \n");
+		vary_found++;
+		break;
+	  }
+  }
+  if(vary_found && num_frames<0){
+	printf("Compiler Error: vary found without frame count being set\n");
+	exit(1);
+  }
+  if(!*name){
+	strncpy(name,"default_basename",128);
+	printf("Compiler Warning: no basename specified, using default_basename as basename\n");
+  }
 }
 
 /*======== struct vary_node ** second_pass() ==========
@@ -98,6 +127,22 @@ struct vary_node ** second_pass() {
   struct vary_node **knobs;
   knobs = (struct vary_node **)calloc(num_frames, sizeof(struct vary_node *));
 
+  int i,f;
+  double delta,total;
+  for ( i = 0; i < lastop ; i++ ){
+	if ( op[i].opcode == VARY ) {
+	  delta = (op[i].op.vary.end_val - op[i].op.vary.start_val) / (op[i].op.vary.end_frame - op[i].op.vary.start_frame);
+	  total = op[i].op.vary.start_val;
+	  for ( f = (int)op[i].op.vary.start_frame; f < num_frames && f <= op[i].op.vary.end_frame; f++ ){
+		curr = (struct vary_node *)calloc(1,sizeof(struct vary_node));
+		strncpy(curr->name,op[i].op.vary.p->name,128);
+		curr->value = total;
+		curr->next = knobs[f];
+		knobs[f] = curr;
+	  }
+	  printf("knob [%s] complete: %lf\n",op[i].op.vary.p->name,total);
+	}
+  }
 
   return knobs;
 }
